@@ -130,15 +130,20 @@ void extensionVelocityMarcher::finalizePoint(int i, double phi_i)
     numerator += fabs(ldistance[dim])*lspeed[dim]*idx2_[dim];
     denominator += fabs(ldistance[dim])*idx2_[dim];
   }
-
+  
   if (denominator != 0.0)
   {
     f_ext_[i] = numerator/denominator;
   }
   else
   {
-    throw std::runtime_error(
-      "div by zero error in scikit-fmm extension velocity");
+    double maxMagSpeed = 0;
+    for (int dim=0; dim<dim_; dim++) {
+      if (fabs(lspeed[dim]) > maxMagSpeed) {
+        maxMagSpeed = lspeed[dim];
+      }
+    }
+    f_ext_[i] = maxMagSpeed;
   }
 }
 
